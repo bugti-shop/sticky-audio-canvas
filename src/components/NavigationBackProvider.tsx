@@ -7,7 +7,7 @@ import { useHardwareBackButton } from '@/hooks/useHardwareBackButton';
 const navigationHistory: string[] = [];
 
 // Home screens that should exit app when back is pressed
-const HOME_SCREENS = ['/', '/todo/today'];
+const HOME_SCREENS = ['/', '/todo/today', '/notesdashboard'];
 
 // Note: Sheet handling is now done via useHardwareBackButton with priority='sheet'
 // These exports are kept for backward compatibility but are no longer used
