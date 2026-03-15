@@ -292,7 +292,7 @@ const AppContent = () => {
       <Sonner />
       
       <PremiumPaywall />
-      <WhatsNewSheet />
+      
       <StreakMilestoneCelebration />
       <StreakTierCelebration />
       <SmartReviewPrompt />
