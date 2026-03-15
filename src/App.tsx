@@ -22,7 +22,7 @@ import { useFirebaseSync } from "@/hooks/useFirebaseSync";
 import { useAchievementToasts } from "@/hooks/useAchievementToasts";
 import { useCertificateToasts } from "@/hooks/useCertificateToasts";
 import { AppLockScreen } from "@/components/AppLockScreen";
-import { WhatsNewSheet } from "@/components/WhatsNewSheet";
+
 import { StreakMilestoneCelebration } from "@/components/StreakMilestoneCelebration";
 import { StreakTierCelebration } from "@/components/StreakTierCelebration";
 import { SmartReviewPrompt } from "@/components/SmartReviewPrompt";
