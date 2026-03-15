@@ -1302,7 +1302,7 @@ const Index = () => {
         onSave={handleSaveNote}
         defaultType={defaultType}
         defaultFolderId={selectedFolderId || undefined}
-        returnTo="/"
+        returnTo="/notesdashboard"
       />
 
       {/* Floating Add Note Button - Hide when editor is open */}
