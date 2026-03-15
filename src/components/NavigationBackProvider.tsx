@@ -80,6 +80,8 @@ export const NavigationBackProvider = ({ children }: NavigationBackProviderProps
     // Fallback: go to appropriate home based on current section
     if (currentPath.startsWith('/todo')) {
       navigate('/todo/today');
+    } else if (currentPath === '/notes' || currentPath === '/calendar' || currentPath === '/settings' || currentPath === '/notesdashboard') {
+      navigate('/notesdashboard');
     } else {
       navigate('/');
     }
