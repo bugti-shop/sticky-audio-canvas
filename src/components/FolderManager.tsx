@@ -277,6 +277,12 @@ export const FolderManager = ({
                   <Code className="h-4 w-4 mr-2" />
                   {t('notesMenu.codeNotes')}
                 </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => onFilterByTypeChange('sketch')}
+                  className={cn(filterByType === 'sketch' && "bg-accent")}
+                >
+                  <PenTool className="h-4 w-4 mr-2" />
+                  {t('notesMenu.sketchNotes', 'Sketch Notes')}
               </>
             )}
             
