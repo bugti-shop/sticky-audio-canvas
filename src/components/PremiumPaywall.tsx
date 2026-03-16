@@ -9,9 +9,9 @@ import { useHardwareBackButton } from '@/hooks/useHardwareBackButton';
 import { setSetting } from '@/utils/settingsStorage';
 
 const PLANS = [
-  { id: 'weekly' as ProductType, label: 'Weekly', price: '$1.99/wk', badge: null },
-  { id: 'monthly' as ProductType, label: 'Monthly', price: '$5.99/mo', badge: 'Popular' },
-  { id: 'yearly' as ProductType, label: 'Yearly', price: '$39.99/yr', badge: 'Best Value' },
+  { id: 'weekly' as ProductType, label: 'Weekly', price: '$1.99/wk', badge: null, hasTrial: false },
+  { id: 'monthly' as ProductType, label: 'Monthly', price: '$5.99/mo', badge: 'Popular', hasTrial: true },
+  { id: 'yearly' as ProductType, label: 'Yearly', price: '$39.99/yr', badge: 'Best Value', hasTrial: true },
 ] as const;
 
 export const PremiumPaywall = () => {
