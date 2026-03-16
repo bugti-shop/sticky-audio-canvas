@@ -27,6 +27,12 @@ const PRODUCT_IDS = {
   yearly: 'npd_yr:npd-yearly-plan',
 } as const;
 
+// Free trial offer IDs (base plan:offer)
+const TRIAL_OFFER_IDS: Partial<Record<ProductType, string>> = {
+  monthly: 'npd-monthly-offer',
+  yearly: 'npd-yearly-trial',
+};
+
 export type ProductType = keyof typeof PRODUCT_IDS;
 export type SubscriptionTier = 'free' | 'premium';
 export type SubscriptionPlanType = 'none' | 'weekly' | 'monthly' | 'yearly';
@@ -323,7 +329,21 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
       }
 
       console.log('RevenueCat: Purchasing store product directly:', storeProduct.identifier);
-      const result = await Purchases.purchaseStoreProduct({ product: storeProduct });
+      
+      // Try to apply free trial offer if available
+      const trialOfferId = TRIAL_OFFER_IDS[productType];
+      const purchaseOptions: any = { product: storeProduct };
+      if (trialOfferId && (storeProduct as any).subscriptionOptions) {
+        const trialOption = (storeProduct as any).subscriptionOptions?.find(
+          (opt: any) => opt.id?.includes(trialOfferId)
+        );
+        if (trialOption) {
+          purchaseOptions.subscriptionOption = trialOption;
+          console.log('RevenueCat: Applying trial offer:', trialOfferId);
+        }
+      }
+      
+      const result = await Purchases.purchaseStoreProduct(purchaseOptions);
       setCustomerInfo(result.customerInfo);
       const hasEntitlement = result.customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined;
       setRcIsPro(hasEntitlement);
