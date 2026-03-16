@@ -283,6 +283,7 @@ export const FolderManager = ({
                 >
                   <PenTool className="h-4 w-4 mr-2" />
                   {t('notesMenu.sketchNotes', 'Sketch Notes')}
+                </DropdownMenuItem>
               </>
             )}
             
