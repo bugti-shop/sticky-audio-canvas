@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Crown, Unlock, Bell, Loader2, MapPin, Check } from 'lucide-react';
+import { X, Crown, Unlock, Bell, Loader2, Gift, Check } from 'lucide-react';
 import { useSubscription, ProductType } from '@/contexts/SubscriptionContext';
 import { Capacitor } from '@capacitor/core';
 import { Purchases } from '@revenuecat/purchases-capacitor';
@@ -132,14 +132,23 @@ export const PremiumPaywall = () => {
              </div>
            </div>
            <div className="flex items-start gap-3 mb-6 relative">
-             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground z-10 flex-shrink-0">
-               <Crown size={16} strokeWidth={2} />
-             </div>
-             <div>
-               <p className="font-semibold">{t('onboarding.paywall.proMember')}</p>
-               <p className="text-muted-foreground text-sm">{t('onboarding.paywall.proMemberDesc')}</p>
-             </div>
-           </div>
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground z-10 flex-shrink-0">
+                <Crown size={16} strokeWidth={2} />
+              </div>
+              <div>
+                <p className="font-semibold">{t('onboarding.paywall.proMember')}</p>
+                <p className="text-muted-foreground text-sm">{t('onboarding.paywall.proMemberDesc')}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 mb-6 relative">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground z-10 flex-shrink-0">
+                <Gift size={16} strokeWidth={2} />
+              </div>
+              <div>
+                <p className="font-semibold">3 Days Free Trial</p>
+                <p className="text-muted-foreground text-sm">Try all Pro features free for 3 days</p>
+              </div>
+            </div>
         </div>
 
         {/* Plan selection */}
