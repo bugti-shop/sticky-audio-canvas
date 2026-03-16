@@ -142,7 +142,7 @@ export const PremiumPaywall = () => {
             </div>
             <div className="flex items-start gap-3 mb-6 relative">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground z-10 flex-shrink-0">
-                <MapPin size={16} strokeWidth={2} />
+                <Gift size={16} strokeWidth={2} />
               </div>
               <div>
                 <p className="font-semibold">3 Days Free Trial</p>
