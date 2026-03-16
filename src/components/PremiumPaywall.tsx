@@ -177,7 +177,11 @@ export const PremiumPaywall = () => {
               disabled={isPurchasing}
               className="w-80 mt-4 btn-duo disabled:opacity-50"
             >
-              {isPurchasing ? t('onboarding.paywall.processing') : `Continue with ${currentPlan.label} — ${currentPlan.price}`}
+              {isPurchasing 
+                ? t('onboarding.paywall.processing') 
+                : currentPlan.hasTrial 
+                  ? 'Try for $0.00 today'
+                  : `Continue with ${currentPlan.label} — ${currentPlan.price}`}
             </button>
 
             <button 
