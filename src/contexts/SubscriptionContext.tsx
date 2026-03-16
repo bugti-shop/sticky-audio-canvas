@@ -27,6 +27,12 @@ const PRODUCT_IDS = {
   yearly: 'npd_yr:npd-yearly-plan',
 } as const;
 
+// Free trial offer IDs (base plan:offer)
+const TRIAL_OFFER_IDS: Partial<Record<ProductType, string>> = {
+  monthly: 'npd-monthly-offer',
+  yearly: 'npd-yearly-trial',
+};
+
 export type ProductType = keyof typeof PRODUCT_IDS;
 export type SubscriptionTier = 'free' | 'premium';
 export type SubscriptionPlanType = 'none' | 'weekly' | 'monthly' | 'yearly';
