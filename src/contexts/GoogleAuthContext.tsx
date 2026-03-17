@@ -100,6 +100,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
     try {
       const googleUser = await signInWithGoogle();
       setUser(googleUser);
+      // Notify RevenueCat to associate subscription with this account
+      window.dispatchEvent(new CustomEvent('googleAuthStateChanged'));
       return googleUser;
     } catch (err) {
       console.error('Google sign-in failed:', err);
@@ -112,6 +114,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await signOutGoogle();
     setUser(null);
+    // Notify RevenueCat to disassociate subscription
+    window.dispatchEvent(new CustomEvent('googleAuthStateChanged'));
   }, []);
 
   return (

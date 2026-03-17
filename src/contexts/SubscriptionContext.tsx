@@ -436,28 +436,55 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
       await Purchases.logOut();
       setCustomerInfo(null);
       setRcIsPro(false);
-      setIsInitialized(false);
+      // Don't reset isInitialized - SDK stays configured, just anonymous now
+      console.log('RevenueCat: Logged out, subscription disassociated');
     } catch (err) {
       console.error('RevenueCat: Logout error', err);
     }
   }, []);
 
-  // Auto-initialize RevenueCat on mount
+  // Auto-initialize RevenueCat on mount with Firebase UID for subscription association
   useEffect(() => {
     if (!isInitialized && Capacitor.isNativePlatform()) {
-      const initWithGoogleUser = async () => {
+      const initWithFirebaseUser = async () => {
         try {
           const storedUser = await getStoredGoogleUser();
-          await initialize(storedUser?.email || undefined);
+          // Use Firebase UID as appUserID so subscriptions are tied to the Google account
+          const appUserID = storedUser?.uid || storedUser?.email || undefined;
+          await initialize(appUserID);
         } catch {
           await initialize();
         }
       };
-      initWithGoogleUser();
+      initWithFirebaseUser();
     } else if (!Capacitor.isNativePlatform()) {
       setIsInitialized(true);
     }
   }, [initialize, isInitialized]);
+
+  // Re-login to RevenueCat when Google auth state changes (sign in / sign out)
+  useEffect(() => {
+    const handleAuthChange = async () => {
+      if (!Capacitor.isNativePlatform() || !isInitialized) return;
+      try {
+        const storedUser = await getStoredGoogleUser();
+        if (storedUser?.uid) {
+          // Log in to RevenueCat with Firebase UID to restore their subscription
+          await Purchases.logIn({ appUserID: storedUser.uid });
+          const { customerInfo: info } = await Purchases.getCustomerInfo();
+          setCustomerInfo(info);
+          const hasEntitlement = info.entitlements.active[ENTITLEMENT_ID] !== undefined;
+          setRcIsPro(hasEntitlement);
+          console.log('RevenueCat: Logged in with Firebase UID, isPro:', hasEntitlement);
+        }
+      } catch (err) {
+        console.error('RevenueCat: Error syncing auth state', err);
+      }
+    };
+
+    window.addEventListener('googleAuthStateChanged', handleAuthChange);
+    return () => window.removeEventListener('googleAuthStateChanged', handleAuthChange);
+  }, [isInitialized]);
 
   // Listen for customer info updates
   useEffect(() => {
