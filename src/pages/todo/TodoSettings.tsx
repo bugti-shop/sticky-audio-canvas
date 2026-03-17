@@ -640,6 +640,35 @@ const TodoSettings = () => {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Delete Account Dialog */}
+      <AlertDialog open={showDeleteAccountDialog} onOpenChange={setShowDeleteAccountDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-destructive">{t('settings.deleteAccount', 'Delete Account')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('settings.deleteAccountWarning', 'This will permanently delete your account and all associated data. This action cannot be undone. Type DELETE to confirm.')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <input
+            type="text"
+            value={deleteAccountConfirmText}
+            onChange={(e) => setDeleteAccountConfirmText(e.target.value)}
+            placeholder={t('settings.typeDelete', 'Type DELETE to confirm')}
+            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deleteAccountConfirmText !== 'DELETE'}
+              onClick={handleDeleteAccount}
+              className="bg-destructive hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {t('settings.deleteAccount', 'Delete Account')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Terms of Service Dialog */}
       <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
         <DialogContent className="max-w-2xl max-h-[80vh]">
