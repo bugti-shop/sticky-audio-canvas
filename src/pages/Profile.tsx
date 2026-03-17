@@ -399,6 +399,12 @@ export default function Profile() {
         )}
       </div>
 
+      {/* Subscription Section */}
+      <div className="px-5 mt-6">
+        <h3 className="text-lg font-bold text-foreground mb-3">{t('profile.subscription', 'Subscription')}</h3>
+        <ProfileSubscriptionCard />
+      </div>
+
       {/* Statistics Section */}
       <div className="px-5 mt-6">
         <h3 className="text-lg font-bold text-foreground mb-3">{t('profile.statistics', 'Statistics')}</h3>
