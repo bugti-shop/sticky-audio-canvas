@@ -436,7 +436,8 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
       await Purchases.logOut();
       setCustomerInfo(null);
       setRcIsPro(false);
-      setIsInitialized(false);
+      // Don't reset isInitialized - SDK stays configured, just anonymous now
+      console.log('RevenueCat: Logged out, subscription disassociated');
     } catch (err) {
       console.error('RevenueCat: Logout error', err);
     }
