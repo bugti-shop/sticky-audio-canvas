@@ -62,6 +62,8 @@ const TodoSettings = () => {
   const [showNotificationsExpanded, setShowNotificationsExpanded] = useState(false);
   const [showQuickAddDialog, setShowQuickAddDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
+  const [deleteAccountConfirmText, setDeleteAccountConfirmText] = useState('');
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
   const [showBackupSuccessDialog, setShowBackupSuccessDialog] = useState(false);
   const [backupFilePath, setBackupFilePath] = useState('');
@@ -210,6 +212,45 @@ const TodoSettings = () => {
     toast.success(t('toasts.dataDeleted'));
     setShowDeleteDialog(false);
     setTimeout(() => window.location.href = '/', 1000);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const { firebaseAuth } = await import('@/lib/firebase');
+      const currentUser = firebaseAuth.currentUser;
+      if (currentUser) {
+        try {
+          const { firebaseDb } = await import('@/lib/firebase');
+          const { ref, remove } = await import('firebase/database');
+          await remove(ref(firebaseDb, `users/${currentUser.uid}`));
+        } catch (dbErr) {
+          console.warn('Failed to delete user data from database:', dbErr);
+        }
+        try {
+          const { deleteUser } = await import('firebase/auth');
+          await deleteUser(currentUser);
+        } catch (authErr: any) {
+          if (authErr?.code === 'auth/requires-recent-login') {
+            toast.error(t('toasts.recentLoginRequired', 'Please sign in again before deleting your account'));
+            return;
+          }
+          console.warn('Failed to delete Firebase user:', authErr);
+        }
+      }
+      await clearAllSettings();
+      const dbs = await window.indexedDB.databases?.() || [];
+      for (const db of dbs) {
+        if (db.name) window.indexedDB.deleteDatabase(db.name);
+      }
+      localStorage.clear();
+      sessionStorage.clear();
+      toast.success(t('toasts.accountDeleted', 'Account deleted successfully'));
+      setShowDeleteAccountDialog(false);
+      setTimeout(() => { window.location.href = '/'; }, 1000);
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      toast.error(t('toasts.accountDeleteFailed', 'Failed to delete account'));
+    }
   };
 
   const handleShareApp = () => {
@@ -455,6 +496,18 @@ const TodoSettings = () => {
             <SettingsRow label={t('settings.deleteData')} onClick={handleDeleteData} />
           </div>
 
+          {/* Account Section */}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <SectionHeading title={t('settings.account', 'Account')} />
+            <button
+              onClick={() => { setDeleteAccountConfirmText(''); setShowDeleteAccountDialog(true); }}
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-destructive/10 transition-colors"
+            >
+              <span className="text-destructive text-sm font-medium">{t('settings.deleteAccount', 'Delete Account')}</span>
+              <ChevronRight className="h-4 w-4 text-destructive/60" />
+            </button>
+          </div>
+
           {/* About & Support Section */}
           <div className="border border-border rounded-lg overflow-hidden">
             <SectionHeading title={t('settings.aboutSupport', 'About & Support')} />
@@ -582,6 +635,35 @@ const TodoSettings = () => {
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={confirmRestoreData}>
               {t('dialogs.continueRestore')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Account Dialog */}
+      <AlertDialog open={showDeleteAccountDialog} onOpenChange={setShowDeleteAccountDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-destructive">{t('settings.deleteAccount', 'Delete Account')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('settings.deleteAccountWarning', 'This will permanently delete your account and all associated data. This action cannot be undone. Type DELETE to confirm.')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <input
+            type="text"
+            value={deleteAccountConfirmText}
+            onChange={(e) => setDeleteAccountConfirmText(e.target.value)}
+            placeholder={t('settings.typeDelete', 'Type DELETE to confirm')}
+            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deleteAccountConfirmText !== 'DELETE'}
+              onClick={handleDeleteAccount}
+              className="bg-destructive hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {t('settings.deleteAccount', 'Delete Account')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
