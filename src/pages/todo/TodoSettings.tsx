@@ -214,6 +214,45 @@ const TodoSettings = () => {
     setTimeout(() => window.location.href = '/', 1000);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      const { firebaseAuth } = await import('@/lib/firebase');
+      const currentUser = firebaseAuth.currentUser;
+      if (currentUser) {
+        try {
+          const { firebaseDb } = await import('@/lib/firebase');
+          const { ref, remove } = await import('firebase/database');
+          await remove(ref(firebaseDb, `users/${currentUser.uid}`));
+        } catch (dbErr) {
+          console.warn('Failed to delete user data from database:', dbErr);
+        }
+        try {
+          const { deleteUser } = await import('firebase/auth');
+          await deleteUser(currentUser);
+        } catch (authErr: any) {
+          if (authErr?.code === 'auth/requires-recent-login') {
+            toast.error(t('toasts.recentLoginRequired', 'Please sign in again before deleting your account'));
+            return;
+          }
+          console.warn('Failed to delete Firebase user:', authErr);
+        }
+      }
+      await clearAllSettings();
+      const dbs = await window.indexedDB.databases?.() || [];
+      for (const db of dbs) {
+        if (db.name) window.indexedDB.deleteDatabase(db.name);
+      }
+      localStorage.clear();
+      sessionStorage.clear();
+      toast.success(t('toasts.accountDeleted', 'Account deleted successfully'));
+      setShowDeleteAccountDialog(false);
+      setTimeout(() => { window.location.href = '/'; }, 1000);
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      toast.error(t('toasts.accountDeleteFailed', 'Failed to delete account'));
+    }
+  };
+
   const handleShareApp = () => {
     const shareUrl = 'https://play.google.com/store/apps/details?id=nota.npd.com';
     if (navigator.share) {
