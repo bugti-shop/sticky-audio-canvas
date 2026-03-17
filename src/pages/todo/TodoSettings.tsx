@@ -62,6 +62,8 @@ const TodoSettings = () => {
   const [showNotificationsExpanded, setShowNotificationsExpanded] = useState(false);
   const [showQuickAddDialog, setShowQuickAddDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
+  const [deleteAccountConfirmText, setDeleteAccountConfirmText] = useState('');
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
   const [showBackupSuccessDialog, setShowBackupSuccessDialog] = useState(false);
   const [backupFilePath, setBackupFilePath] = useState('');
