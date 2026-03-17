@@ -455,6 +455,18 @@ const TodoSettings = () => {
             <SettingsRow label={t('settings.deleteData')} onClick={handleDeleteData} />
           </div>
 
+          {/* Account Section */}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <SectionHeading title={t('settings.account', 'Account')} />
+            <button
+              onClick={() => { setDeleteAccountConfirmText(''); setShowDeleteAccountDialog(true); }}
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-destructive/10 transition-colors"
+            >
+              <span className="text-destructive text-sm font-medium">{t('settings.deleteAccount', 'Delete Account')}</span>
+              <ChevronRight className="h-4 w-4 text-destructive/60" />
+            </button>
+          </div>
+
           {/* About & Support Section */}
           <div className="border border-border rounded-lg overflow-hidden">
             <SectionHeading title={t('settings.aboutSupport', 'About & Support')} />

@@ -199,6 +199,31 @@ export const useSettingsPageState = () => {
 
   const handleDeleteAccount = async () => {
     try {
+      // Delete from Firebase Auth first
+      const { firebaseAuth } = await import('@/lib/firebase');
+      const currentUser = firebaseAuth.currentUser;
+      if (currentUser) {
+        try {
+          // Delete user data from Realtime Database
+          const { firebaseDb } = await import('@/lib/firebase');
+          const { ref, remove } = await import('firebase/database');
+          await remove(ref(firebaseDb, `users/${currentUser.uid}`));
+        } catch (dbErr) {
+          console.warn('Failed to delete user data from database:', dbErr);
+        }
+        try {
+          const { deleteUser } = await import('firebase/auth');
+          await deleteUser(currentUser);
+        } catch (authErr: any) {
+          // If requires recent login, sign out and notify
+          if (authErr?.code === 'auth/requires-recent-login') {
+            toast({ title: t('toasts.recentLoginRequired', 'Please sign in again before deleting your account'), variant: 'destructive' });
+            return;
+          }
+          console.warn('Failed to delete Firebase user:', authErr);
+        }
+      }
+      // Clear all local data
       await clearAllSettings();
       const dbs = await window.indexedDB.databases?.() || [];
       for (const db of dbs) {
