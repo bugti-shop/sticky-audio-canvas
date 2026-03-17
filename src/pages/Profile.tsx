@@ -15,6 +15,7 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { ProfileImageCropper } from '@/components/ProfileImageCropper';
 import { ProfileStatsBanner } from '@/components/profile/ProfileStats';
 import { ProfileAchievements } from '@/components/profile/ProfileAchievements';
+import { ProfileSubscriptionCard } from '@/components/profile/ProfileSubscriptionCard';
 import { CountryFlagPickerSheet } from '@/components/CountryFlagPickerSheet';
 
 
